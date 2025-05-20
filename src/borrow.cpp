@@ -19,10 +19,13 @@ void showMenuMuonSach() {
 
 void quanLyMuonSach() {
     int choice;
+    docDuLieuDocGia();
+    docDuLieuSach();
     docDuLieuPhieuMuon(); // Đọc dữ liệu khi vào menu quản lý mượn sách
     do {
         showMenuMuonSach();
         cin >> choice;
+        cin.ignore();
         switch (choice) {
             case 1:
                 lapPhieuMuonSach();
@@ -126,7 +129,7 @@ void hienThiPhieuMuon() {
 
 int timViTriPhieuMuon(const char *maDocGia) {
     for (int i = 0; i < soLuongPhieuMuon; i++) {
-        if (strcmp(danhSachPhieuMuon[i].maDocGiaMuon, maDocGia) == 0) {
+        if (stricmp(danhSachPhieuMuon[i].maDocGiaMuon, maDocGia) == 0) {
             return i;
         }
     }
@@ -146,14 +149,13 @@ void luuDuLieuPhieuMuon() {
 
     fprintf(file, "%d\n", soLuongPhieuMuon);
     for (int i = 0; i < soLuongPhieuMuon; i++) {
-        fprintf(file, "%s|%s|%s|%d",
-                danhSachPhieuMuon[i].maDocGiaMuon,
-                danhSachPhieuMuon[i].ngayMuon,
-                danhSachPhieuMuon[i].ngayTraDuKien,
-                danhSachPhieuMuon[i].soLuongSachMuon);
+        fprintf(file, "%s\n", danhSachPhieuMuon[i].maDocGiaMuon);
+        fprintf(file, "%s\n", danhSachPhieuMuon[i].ngayMuon);
+        fprintf(file, "%s\n", danhSachPhieuMuon[i].ngayTraDuKien);
+        fprintf(file, "%d\n", danhSachPhieuMuon[i].soLuongSachMuon);
 
         for (int j = 0; j < danhSachPhieuMuon[i].soLuongSachMuon; j++) {
-            fprintf(file, "|%s", danhSachPhieuMuon[i].danhSachISBNMuon[j]);
+            fprintf(file, "%s\n", danhSachPhieuMuon[i].danhSachISBNMuon[j]);
         }
     }
     fclose(file);
@@ -168,14 +170,21 @@ void docDuLieuPhieuMuon() {
 
     fscanf(file, "%d\n", &soLuongPhieuMuon);
     for (int i = 0; i < soLuongPhieuMuon; i++) {
-        fscanf(file, "%s|%s|%s|%d",
-               danhSachPhieuMuon[i].maDocGiaMuon,
-               danhSachPhieuMuon[i].ngayMuon,
-               danhSachPhieuMuon[i].ngayTraDuKien,
-               &danhSachPhieuMuon[i].soLuongSachMuon);
+        fgets(danhSachPhieuMuon[i].maDocGiaMuon, MAX_DOC_GIA_ID_LENGTH, file);
+        fgets(danhSachPhieuMuon[i].ngayMuon, MAX_DATE_LENGTH, file);
+        fgets(danhSachPhieuMuon[i].ngayTraDuKien, MAX_DATE_LENGTH, file);
+        fscanf(file, "%d\n", &danhSachPhieuMuon[i].soLuongSachMuon);
 
         for (int j = 0; j < danhSachPhieuMuon[i].soLuongSachMuon; j++) {
-            fscanf(file, "|%s", danhSachPhieuMuon[i].danhSachISBNMuon[j]);
+            fscanf(file, "%s\n", danhSachPhieuMuon[i].danhSachISBNMuon[j]);
+        }
+
+        // Xóa ký tự xuống dòng ở cuối chuỗi
+        danhSachPhieuMuon[i].maDocGiaMuon[strcspn(danhSachPhieuMuon[i].maDocGiaMuon, "\n")] = '\0';
+        danhSachPhieuMuon[i].ngayMuon[strcspn(danhSachPhieuMuon[i].ngayMuon, "\n")] = '\0';
+        danhSachPhieuMuon[i].ngayTraDuKien[strcspn(danhSachPhieuMuon[i].ngayTraDuKien, "\n")] = '\0';
+        for (int j = 0; j < danhSachPhieuMuon[i].soLuongSachMuon; j++) {
+            danhSachPhieuMuon[i].danhSachISBNMuon[j][strcspn(danhSachPhieuMuon[i].danhSachISBNMuon[j], "\n")] = '\0';
         }
     }
     fclose(file);

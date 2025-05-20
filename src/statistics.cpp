@@ -21,9 +21,14 @@ void showMenuThongKe() {
 
 void quanLyThongKe() {
     int choice;
+    docDuLieuDocGia();
+    docDuLieuSach();
+    docDuLieuPhieuMuon();
+    docDuLieuPhieuTra();
     do {
         showMenuThongKe();
         cin >> choice;
+        cin.ignore();
         switch (choice) {
             case 1:
                 thongKeSoLuongSach();

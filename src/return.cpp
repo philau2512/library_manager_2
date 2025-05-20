@@ -5,6 +5,7 @@ using namespace std;
 #include "borrow.h"
 #include "book.h"
 #include "utils.h"
+#include "user.h"
 
 ReturnRecord danhSachPhieuTra[MAX_RETURN_RECORDS];
 int soLuongPhieuTra = 0;
@@ -18,10 +19,14 @@ void showMenuTraSach() {
 
 void quanLyTraSach() {
     int choice;
+    docDuLieuDocGia();
+    docDuLieuSach();
+    docDuLieuPhieuMuon();
     docDuLieuPhieuTra(); // Đọc dữ liệu khi vào menu quản lý trả sách
     do {
         showMenuTraSach();
         cin >> choice;
+        cin.ignore();
         switch (choice) {
             case 1:
                 lapPhieuTraSach();
@@ -47,7 +52,6 @@ void lapPhieuTraSach() {
     ReturnRecord phieuTraMoi;
 
     cout << "Nhap ma doc gia tra: ";
-    cin.ignore();
     cin.getline(phieuTraMoi.maDocGiaTra, MAX_DOC_GIA_ID_LENGTH);
 
     int indexPhieuMuon = timViTriPhieuMuon(phieuTraMoi.maDocGiaTra);
@@ -117,12 +121,12 @@ void luuDuLieuPhieuTra() {
 
     fprintf(file, "%d\n", soLuongPhieuTra);
     for (int i = 0; i < soLuongPhieuTra; i++) {
-        fprintf(file, "%s|%s|%d\n",
-                danhSachPhieuTra[i].maDocGiaTra,
-                danhSachPhieuTra[i].ngayTraThucTe,
-                danhSachPhieuTra[i].soLuongSachTra);
+        fprintf(file, "%s\n", danhSachPhieuTra[i].maDocGiaTra);
+        fprintf(file, "%s\n", danhSachPhieuTra[i].ngayTraThucTe);
+        fprintf(file, "%d\n", danhSachPhieuTra[i].soLuongSachTra);
+
         for (int j = 0; j < danhSachPhieuTra[i].soLuongSachTra; j++) {
-            fprintf(file, "%s ", danhSachPhieuTra[i].danhSachISBNTra[j]);
+            fprintf(file, "%s\n", danhSachPhieuTra[i].danhSachISBNTra[j]);
         }
     }
     fclose(file);
@@ -134,14 +138,21 @@ void docDuLieuPhieuTra() {
         cout << "Loi: Khong the mo file return.txt de doc!\n";
         return;
     }
-    fscanf(file, "%d", &soLuongPhieuTra);
+    fscanf(file, "%d\n", &soLuongPhieuTra);
     for (int i = 0; i < soLuongPhieuTra; i++) {
-        fscanf(file, "%s|%s|%d",
-               danhSachPhieuTra[i].maDocGiaTra,
-               danhSachPhieuTra[i].ngayTraThucTe,
-               &danhSachPhieuTra[i].soLuongSachTra);
+        fgets(danhSachPhieuTra[i].maDocGiaTra, MAX_DOC_GIA_ID_LENGTH, file);
+        fgets(danhSachPhieuTra[i].ngayTraThucTe, MAX_DATE_LENGTH, file);
+        fscanf(file, "%d\n", &danhSachPhieuTra[i].soLuongSachTra);
+
         for (int j = 0; j < danhSachPhieuTra[i].soLuongSachTra; j++) {
-            fscanf(file, "%s", danhSachPhieuTra[i].danhSachISBNTra[j]);
+            fgets(danhSachPhieuTra[i].danhSachISBNTra[j], MAX_ISBN_LENGTH, file);
+        }
+
+        // Xóa ký tự xuống dòng cuối cùng
+        danhSachPhieuTra[i].maDocGiaTra[strcspn(danhSachPhieuTra[i].maDocGiaTra, "\n")] = '\0';
+        danhSachPhieuTra[i].ngayTraThucTe[strcspn(danhSachPhieuTra[i].ngayTraThucTe, "\n")] = '\0';
+        for (int j = 0; j < danhSachPhieuTra[i].soLuongSachTra; j++) {
+            danhSachPhieuTra[i].danhSachISBNTra[j][strcspn(danhSachPhieuTra[i].danhSachISBNTra[j], "\n")] = '\0';
         }
     }
     fclose(file);
