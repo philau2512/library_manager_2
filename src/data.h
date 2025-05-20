@@ -35,9 +35,10 @@ struct Book {
     char maSach[MAX_ISBN_LENGTH];
     char tenSach[MAX_TEXT_LENGTH];
     char tacGia[MAX_TEXT_LENGTH];
-    char theLoai[MAX_TEXT_LENGTH];
     char nhaXuatBan[MAX_TEXT_LENGTH];
     int namXuatBan;
+    char theLoai[MAX_TEXT_LENGTH];
+    double giaSach;
     int soLuong;
 };
 

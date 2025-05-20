@@ -5,7 +5,6 @@ using namespace std;
 
 Book danhSachSach[MAX_BOOKS];
 int soLuongSach = 0;
-char* pathDataSach = "../data/books.txt";
 
 void showMenuQuanLySach() {
     cout << "1. Xem danh sach 'Sach'\n";
@@ -60,7 +59,7 @@ void xemSach() {
         return;
     }
     cout << "Danh sach sach:" << endl;
-    cout << "STT | Ma Sach | Ten Sach | Tac Gia | Nha Xuat Ban | Nam Xuat Ban | The Loai | Gia Sach | So Luong" << endl;
+    cout << "Ma Sach | Ten Sach | Tac Gia | Nha Xuat Ban | Nam Xuat Ban | The Loai | Gia Sach | So Luong" << endl;
     for (int i = 0; i < soLuongSach; i++) {
         inThongTinSach(danhSachSach[i]);
     }
@@ -89,17 +88,23 @@ void themSach() {
     cout << "Tac gia: ";
     cin.getline(sachMoi.tacGia, MAX_TEXT_LENGTH);
 
-    cout << "The loai: ";
-    cin.getline(sachMoi.theLoai, MAX_TEXT_LENGTH);
-
     cout << "Nha xuat ban: ";
     cin.getline(sachMoi.nhaXuatBan, MAX_TEXT_LENGTH);
 
     cout << "Nam xuat ban: ";
     cin >> sachMoi.namXuatBan;
+    cin.ignore();
+
+    cout << "The loai: ";
+    cin.getline(sachMoi.theLoai, MAX_TEXT_LENGTH);
+
+    cout << "Gia sach: ";
+    cin >> sachMoi.giaSach;
+    cin.ignore();
 
     cout << "So luong: ";
     cin >> sachMoi.soLuong;
+    cin.ignore();
 
     danhSachSach[soLuongSach++] = sachMoi;
     luuDuLieuSach();
@@ -126,17 +131,23 @@ void chinhSuaSach() {
     cout << "Tac gia: ";
     cin.getline(danhSachSach[viTri].tacGia, MAX_TEXT_LENGTH);
 
-    cout << "The loai: ";
-    cin.getline(danhSachSach[viTri].theLoai, MAX_TEXT_LENGTH);
-
     cout << "Nha xuat ban: ";
     cin.getline(danhSachSach[viTri].nhaXuatBan, MAX_TEXT_LENGTH);
 
     cout << "Nam xuat ban: ";
     cin >> danhSachSach[viTri].namXuatBan;
+    cin.ignore();
+
+    cout << "The loai: ";
+    cin.getline(danhSachSach[viTri].theLoai, MAX_TEXT_LENGTH);
+
+    cout << "Gia sach: ";
+    cin >> danhSachSach[viTri].giaSach;
+    cin.ignore();
 
     cout << "So luong: ";
     cin >> danhSachSach[viTri].soLuong;
+    cin.ignore();
 
     luuDuLieuSach();
     cout << "Cap nhat thong tin sach thanh cong!\n";
@@ -240,15 +251,16 @@ void inThongTinSach(const Book &sach) {
     cout << sach.maSach << " | "
             << sach.tenSach << " | "
             << sach.tacGia << " | "
-            << sach.theLoai << " | "
             << sach.nhaXuatBan << " | "
             << sach.namXuatBan << " | "
+            << sach.theLoai << " | "
+            << sach.giaSach << " | "
             << sach.soLuong << endl;
     cout << endl;
 }
 
 void luuDuLieuSach() {
-    FILE *file = fopen("books.txt", "w");
+    FILE *file = fopen("../data/books.txt", "w");
     if (file == NULL) {
         cout << "Loi: Khong the mo file books.txt de ghi!\n";
         return;
@@ -256,35 +268,42 @@ void luuDuLieuSach() {
 
     fprintf(file, "%d\n", soLuongSach);
     for (int i = 0; i < soLuongSach; i++) {
-        fprintf(file, "%s|%s|%s|%s|%s|%d|%d\n",
-                danhSachSach[i].maSach,
-                danhSachSach[i].tenSach,
-                danhSachSach[i].tacGia,
-                danhSachSach[i].theLoai,
-                danhSachSach[i].nhaXuatBan,
-                danhSachSach[i].namXuatBan,
-                danhSachSach[i].soLuong);
+        fprintf(file, "%s\n", danhSachSach[i].maSach);
+        fprintf(file, "%s\n", danhSachSach[i].tenSach);
+        fprintf(file, "%s\n", danhSachSach[i].tacGia);
+        fprintf(file, "%s\n", danhSachSach[i].nhaXuatBan);
+        fprintf(file, "%d\n", danhSachSach[i].namXuatBan);
+        fprintf(file, "%s\n", danhSachSach[i].theLoai);
+        fprintf(file, "%lf\n", danhSachSach[i].giaSach);
+        fprintf(file, "%d\n", danhSachSach[i].soLuong);
     }
     fclose(file);
 }
 
 void docDuLieuSach() {
-    FILE *file = fopen("books.txt", "r");
+    FILE *file = fopen("../data/books.txt", "r");
     if (file == NULL) {
         cout << "Loi: Khong the mo file books.txt de doc!\n";
         return;
     }
 
-    fscanf(file, "%d", &soLuongSach);
+    fscanf(file, "%d\n", &soLuongSach);
     for (int i = 0; i < soLuongSach; i++) {
-        fscanf(file, "%s|%s|%s|%s|%s|%d|%d",
-               danhSachSach[i].maSach,
-               danhSachSach[i].tenSach,
-               danhSachSach[i].tacGia,
-               danhSachSach[i].theLoai,
-               danhSachSach[i].nhaXuatBan,
-               danhSachSach[i].namXuatBan,
-               danhSachSach[i].soLuong);
+        fgets(danhSachSach[i].maSach, MAX_ISBN_LENGTH, file);
+        fgets(danhSachSach[i].tenSach, MAX_TEXT_LENGTH, file);
+        fgets(danhSachSach[i].tacGia, MAX_TEXT_LENGTH, file);
+        fgets(danhSachSach[i].nhaXuatBan, MAX_TEXT_LENGTH, file);
+        fscanf(file, "%d\n", &danhSachSach[i].namXuatBan);
+        fgets(danhSachSach[i].theLoai, MAX_TEXT_LENGTH, file);
+        fscanf(file, "%lf\n", &danhSachSach[i].giaSach);
+        fscanf(file, "%d\n", &danhSachSach[i].soLuong);
+
+        // Xóa ký tự '\n' ở cuối chuỗi
+        danhSachSach[i].maSach[strcspn(danhSachSach[i].maSach, "\n")] = '\0';
+        danhSachSach[i].tenSach[strcspn(danhSachSach[i].tenSach, "\n")] = '\0';
+        danhSachSach[i].tacGia[strcspn(danhSachSach[i].tacGia, "\n")] = '\0';
+        danhSachSach[i].theLoai[strcspn(danhSachSach[i].theLoai, "\n")] = '\0';
+        danhSachSach[i].nhaXuatBan[strcspn(danhSachSach[i].nhaXuatBan, "\n")] = '\0';
     }
     fclose(file);
 }
