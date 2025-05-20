@@ -1,0 +1,24 @@
+# Bỏ qua node_modules
+node_modules/
+.idea/
+.vscode/
+cmake-build-debug/
+
+# Bao gồm các file khác, ví dụ .csv và .txt, ...
+*.csv
+*.xlsx
+*.doc
+*.docx
+*.pdf
+*.zip
+*.rar
+*.xml
+*.png
+*.jpg
+*.jpeg
+*.weights
+*.cfg
+*.ttf
+*.mp4
+*.names
+*.exe
